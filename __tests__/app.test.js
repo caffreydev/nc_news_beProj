@@ -87,3 +87,34 @@ describe('GET /api', () => {
     });
   });
 });
+
+describe('GET api/articles/:article_id', () => {
+  it('should return a 200 status code if called correctly', () => {
+    return request(app).get('/api/articles/1').expect(200);
+  });
+
+  it('should return an object if called correctly', () => {
+    return request(app)
+      .get('/api/articles/1')
+      .expect(200)
+      .then(({ body }) => {
+        expect(typeof body).toBe('object');
+      });
+  });
+
+  it('should return correct object for id of 1', () => {
+    const firstArticle = { ...data.articleData[0] };
+    let creationDate = new Date(firstArticle.created_at - 3600000); //adjustment for bst
+    firstArticle.created_at = creationDate.toISOString();
+
+    return (appRequest = request(app)
+      .get('/api/articles/1')
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.hasOwnProperty('article_id')).toBe(true);
+        expect(typeof body.article_id).toBe('number');
+        delete body.article_id;
+        expect(body.created_at).toEqual(firstArticle.created_at);
+      }));
+  });
+});
