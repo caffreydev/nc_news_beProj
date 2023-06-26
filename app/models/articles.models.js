@@ -1,11 +1,7 @@
 const db = require('../../db/connection');
-const format = require('pg-format');
 
 exports.getArticleModel = (articleId) => {
-  const queryString = format(
-    'SELECT * FROM articles WHERE article_id=%s',
-    articleId
-  );
+  const queryString = `SELECT * FROM articles WHERE article_id=$1`;
 
-  return db.query(queryString).then(({ rows }) => rows[0]);
+  return db.query(queryString, [articleId]).then(({ rows }) => rows[0]);
 };
