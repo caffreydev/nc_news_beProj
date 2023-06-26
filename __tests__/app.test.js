@@ -3,6 +3,7 @@ const db = require('../db/connection.js');
 const app = require('../app/app.js');
 const data = require('../db/data/test-data');
 const seed = require('../db/seeds/seed.js');
+const fs = require('fs').promises;
 
 beforeEach(() => {
   return seed(data);
@@ -10,6 +11,12 @@ beforeEach(() => {
 
 afterAll(() => {
   return db.end();
+});
+
+describe('invalid endpoints should throw an error', () => {
+  it('get /api/pippascool should throw error without responding', () => {
+    return request(app).get('/api/pippascool').expect(404);
+  });
 });
 
 describe('get /api/topics', () => {
@@ -48,8 +55,35 @@ describe('get /api/topics', () => {
   });
 });
 
-describe('invalid endpoints should throw an error', () => {
-  it('get /api/pippascool should throw error without responding', () => {
-    return request(app).get('/api/pippascool').expect(404);
+describe('GET /api', () => {
+  it('should respond with a 200 status code', () => {
+    return request(app).get('/api').expect(200);
+  });
+
+  it('should respond with a valid JSON object', () => {
+    return request(app)
+      .get('/api')
+      .then((data) => {
+        expect(typeof data).toBe('object');
+      });
+  });
+
+  it('should agree with the JSON object saved in endpointsList.json', () => {
+    let appResponse;
+    let fileResponse;
+    const appCall = request(app)
+      .get('/api')
+      .then(({ text }) => {
+        appResponse = text;
+      });
+    const fileData = fs
+      .readFile(`${__dirname}/../app/endpointsList.json`, 'utf8')
+      .then((data) => {
+        fileResponse = data;
+      });
+
+    return Promise.all([appCall, fileData]).then(() => {
+      expect(appResponse).toEqual(fileResponse);
+    });
   });
 });
