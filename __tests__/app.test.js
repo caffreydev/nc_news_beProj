@@ -31,32 +31,10 @@ describe('get /api/topics', () => {
       .get('/api/topics')
       .expect(200)
       .then(({ body }) => {
+        expect(body.length).toBe(3);
         body.forEach((obj) => {
           expect(typeof obj).toBe('object');
         });
-      });
-  });
-
-  it('each element of response array should have the appropriate keys and value types', () => {
-    return request(app)
-      .get('/api/topics')
-      .expect(200)
-      .then(({ body }) => {
-        body.forEach((obj) => {
-          expect(obj).toMatchObject({
-            slug: expect.any(String),
-            description: expect.any(String),
-          });
-        });
-      });
-  });
-
-  it('response array should have the correct number of values, in line with test data', () => {
-    return request(app)
-      .get('/api/topics')
-      .expect(200)
-      .then(({ body }) => {
-        expect(body.length).toBe(3);
       });
   });
 
@@ -67,5 +45,11 @@ describe('get /api/topics', () => {
       .then(({ body }) => {
         expect(body).toEqual(data.topicData);
       });
+  });
+});
+
+describe('invalid endpoints should throw an error', () => {
+  it('get /api/pippascool should throw error without responding', () => {
+    return request(app).get('/api/pippascool').expect(404);
   });
 });
