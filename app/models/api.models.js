@@ -6,8 +6,5 @@ exports.contentsModel = () => {
     .readFile(`${__dirname}/../endpointsList.json`, 'utf8')
     .then((data) => {
       return data;
-    })
-    .catch((e) => {
-      throw e;
     });
 };
