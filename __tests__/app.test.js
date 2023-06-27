@@ -154,3 +154,66 @@ describe('GET api/articles/:article_id', () => {
       });
   });
 });
+
+describe('get api/articles', () => {
+  it('should respond with a 200 status code', () => {
+    return request(app).get('/api/articles').expect(200);
+  });
+
+  it('should return with an array on the response body', () => {
+    return request(app)
+      .get('/api/articles')
+      .expect(200)
+      .then(({ body }) => {
+        expect(Array.isArray(body)).toBe(true);
+      });
+  });
+
+  it('each element of the array should be an object with correct keys and no body key', () => {
+    return request(app)
+      .get('/api/articles')
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.length).toBe(13);
+        expect(body.hasOwnProperty('body')).toBe(false);
+        body.forEach((element) => {
+          expect(element).toMatchObject({
+            author: expect.any(String),
+            title: expect.any(String),
+            article_id: expect.any(Number),
+            comment_count: expect.any(Number),
+            topic: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            article_img_url: expect.any(String),
+          });
+        });
+      });
+  });
+
+  it('array should be sorted in descending order on article id', () => {
+    return request(app)
+      .get('/api/articles')
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.length).toBe(13);
+        body.forEach((obj, index, arr) => {
+          if (index !== arr.length - 1) {
+            expect(body[index] <= body[index + 1]).toBe(true);
+          }
+        });
+      });
+  });
+
+  it('comment counts should be calculated correctly', () => {
+    return request(app)
+      .get('/api/articles')
+      .expect(200)
+      .then(({ body }) => {
+        const articleOne = body.sort((a, b) => a.article_id - b.article_id)[0];
+        const articleFive = body.sort((a, b) => a.article_id - b.article_id)[4];
+        expect(articleOne.comment_count).toBe(11);
+        expect(articleFive.comment_count).toBe(2);
+      });
+  });
+});

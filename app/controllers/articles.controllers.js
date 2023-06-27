@@ -1,4 +1,4 @@
-const { getArticleModel } = require('../models');
+const { getArticleModel, getAllArticlesModel } = require('../models');
 
 exports.getArticleController = (req, res, next) => {
   const articleId = req.params.article_id;
@@ -14,5 +14,11 @@ exports.getArticleController = (req, res, next) => {
     }
 
     res.status(200).send(data[0]);
+  });
+};
+
+exports.getAllArticlesController = (_, res) => {
+  getAllArticlesModel().then((data) => {
+    res.status(200).send(data);
   });
 };

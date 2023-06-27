@@ -9,11 +9,13 @@ const {
   getTopicsController,
   contentsController,
   getArticleController,
+  getAllArticlesController,
 } = require('./controllers');
 
 app.get('/api/topics', getTopicsController);
 app.get('/api', contentsController);
 app.get('/api/articles/:article_id', getArticleController);
+app.get('/api/articles', getAllArticlesController);
 app.all('*', badPathController);
 
 app.use(customErrorController);
