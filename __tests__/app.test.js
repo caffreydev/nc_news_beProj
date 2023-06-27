@@ -13,9 +13,14 @@ afterAll(() => {
   return db.end();
 });
 
-describe('invalid endpoints should throw an error', () => {
-  it('get /api/pippascool should throw error without responding', () => {
-    return request(app).get('/api/pippascool').expect(404);
+describe('invalid endpoints should throw an error and send an invalid path message', () => {
+  it('get /api/nonexistentpath should throw error and respond with invalid path', () => {
+    return request(app)
+      .get('/api/nonexistentpath')
+      .expect(404)
+      .catch((e) => {
+        expect(e).toEqual({ message: 'invalid path' });
+      });
   });
 });
 
@@ -112,25 +117,40 @@ describe('GET api/articles/:article_id', () => {
       .get('/api/articles/1')
       .expect(200)
       .then(({ body }) => {
-        expect(body).toEqual(body);
+        expect(body).toEqual(firstArticle);
       });
   });
 
-  it('should handle incorrect / non existent id with appropriate error', () => {
+  it('should handle non existent id with appropriate error', () => {
     return request(app)
       .get('/api/articles/99999')
       .expect(404)
       .catch((e) => {
-        expect(e).toEqual({ message: 'resource not found' });
+        console.log(e);
+        expect(e.message).toEqual('resource not found');
       });
   });
 
-  it('should handle incorrect / non existent id with appropriate error', () => {
+  it('should handle incorrect id formatted as not number with appropriate error', () => {
     return request(app)
       .get('/api/articles/chocolatecake')
-      .expect(404)
+      .expect(400)
       .catch((e) => {
-        expect(e).toEqual({ message: 'resource not found' });
+        console.log(e);
+        expect(e).toEqual({
+          message: 'bad request: article id must be an integer',
+        });
+      });
+  });
+
+  it('should handle incorrect id formatted as non-integer number with appropriate error', () => {
+    return request(app)
+      .get('/api/articles/3.2')
+      .expect(400)
+      .catch((e) => {
+        expect(e).toEqual({
+          message: 'bad request: article id must be an integer',
+        });
       });
   });
 });
