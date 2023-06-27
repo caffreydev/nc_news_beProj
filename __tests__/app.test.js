@@ -1,4 +1,5 @@
 const request = require('supertest');
+require('jest-sorted');
 const db = require('../db/connection.js');
 const app = require('../app/app.js');
 const data = require('../db/data/test-data');
@@ -34,7 +35,7 @@ describe('get /api/topics', () => {
       .get('/api/topics')
       .expect(200)
       .then(({ body }) => {
-        expect(Array.isArray(body)).toBe(true);
+        expect(Array.isArray(body.topics)).toBe(true);
       });
   });
 
@@ -43,8 +44,8 @@ describe('get /api/topics', () => {
       .get('/api/topics')
       .expect(200)
       .then(({ body }) => {
-        expect(body.length).toBe(3);
-        body.forEach((obj) => {
+        expect(body.topics.length).toBe(3);
+        body.topics.forEach((obj) => {
           expect(typeof obj).toBe('object');
         });
       });
@@ -55,7 +56,7 @@ describe('get /api/topics', () => {
       .get('/api/topics')
       .expect(200)
       .then(({ body }) => {
-        expect(body).toEqual(data.topicData);
+        expect(body.topics).toEqual(data.topicData);
       });
   });
 });
@@ -68,8 +69,8 @@ describe('GET /api', () => {
   it('should respond with a valid JSON object', () => {
     return request(app)
       .get('/api')
-      .then((data) => {
-        expect(typeof data).toBe('object');
+      .then(({ body }) => {
+        expect(typeof body.contents).toBe('string');
       });
   });
 
@@ -78,8 +79,8 @@ describe('GET /api', () => {
     let fileResponse;
     const appCall = request(app)
       .get('/api')
-      .then(({ text }) => {
-        appResponse = text;
+      .then(({ body }) => {
+        appResponse = body.contents;
       });
     const fileData = fs
       .readFile(`${__dirname}/../app/endpointsList.json`, 'utf8')
@@ -117,7 +118,7 @@ describe('GET api/articles/:article_id', () => {
       .get('/api/articles/1')
       .expect(200)
       .then(({ body }) => {
-        expect(body).toEqual(firstArticle);
+        expect(body.article).toEqual(firstArticle);
       });
   });
 
@@ -151,6 +152,71 @@ describe('GET api/articles/:article_id', () => {
         expect(e).toEqual({
           message: 'bad request: article id must be an integer',
         });
+      });
+  });
+});
+
+describe('get api/articles', () => {
+  it('should respond with a 200 status code', () => {
+    return request(app).get('/api/articles').expect(200);
+  });
+
+  it('should return with an array on the response body', () => {
+    return request(app)
+      .get('/api/articles')
+      .expect(200)
+      .then(({ body }) => {
+        expect(Array.isArray(body.articles)).toBe(true);
+      });
+  });
+
+  it('each element of the array should be an object with correct keys and no body key', () => {
+    return request(app)
+      .get('/api/articles')
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles.length).toBe(13);
+        expect(body.articles.hasOwnProperty('body')).toBe(false);
+        body.articles.forEach((element) => {
+          expect(element.comment_count).not.toBeNaN();
+          expect(element).toMatchObject({
+            author: expect.any(String),
+            title: expect.any(String),
+            article_id: expect.any(Number),
+            comment_count: expect.any(String),
+            topic: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            article_img_url: expect.any(String),
+          });
+        });
+      });
+  });
+
+  it('array should be sorted in descending order on creation date', () => {
+    return request(app)
+      .get('/api/articles')
+      .expect(200)
+      .then(({ body }) => {
+        console.log(body);
+        expect(body.articles.length).toBe(13);
+        expect(body.articles).toBeSortedBy('created_at', { descending: true });
+      });
+  });
+
+  it('comment counts should be calculated correctly', () => {
+    return request(app)
+      .get('/api/articles')
+      .expect(200)
+      .then(({ body }) => {
+        const articleOne = body.articles.sort(
+          (a, b) => a.article_id - b.article_id
+        )[0];
+        const articleFive = body.articles.sort(
+          (a, b) => a.article_id - b.article_id
+        )[4];
+        expect(articleOne.comment_count).toBe('11');
+        expect(articleFive.comment_count).toBe('2');
       });
   });
 });

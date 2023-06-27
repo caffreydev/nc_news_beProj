@@ -1,6 +1,9 @@
 const { getTopicsController } = require('./topics.controllers.js');
 const { contentsController } = require('./api.controllers.js');
-const { getArticleController } = require('./articles.controllers.js');
+const {
+  getArticleController,
+  getAllArticlesController,
+} = require('./articles.controllers.js');
 const {
   badPathController,
   psqlErrorController,
@@ -16,4 +19,5 @@ module.exports = {
   psqlErrorController,
   customErrorController,
   serverErrorController,
+  getAllArticlesController,
 };
