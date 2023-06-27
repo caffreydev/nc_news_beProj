@@ -8,17 +8,17 @@ exports.getArticleController = (req, res, next) => {
       .send({ message: 'bad request: article id must be an integer' });
   }
 
-  return getArticleModel(articleId).then((data) => {
-    if (data.length === 0) {
+  return getArticleModel(articleId).then((article) => {
+    if (article.length === 0) {
       return res.status(404).send({ message: 'resource not found' });
     }
 
-    res.status(200).send(data[0]);
+    res.status(200).send({ article: article[0] });
   });
 };
 
 exports.getAllArticlesController = (_, res) => {
-  getAllArticlesModel().then((data) => {
-    res.status(200).send(data);
+  getAllArticlesModel().then((articles) => {
+    res.status(200).send({ articles: articles });
   });
 };

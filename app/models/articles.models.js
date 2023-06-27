@@ -7,30 +7,14 @@ exports.getArticleModel = (articleId) => {
 };
 
 exports.getAllArticlesModel = () => {
-  let articlesArray;
-  let commentsArray;
+  const queryString = `SELECT articles.author, articles.title, articles.article_id, 
+  articles.topic, articles.created_at, articles.votes, articles.article_img_url, 
+  count(comments.article_id) AS comment_count
+  FROM articles 
+  LEFT JOIN comments
+  ON articles.article_id=comments.article_id
+  GROUP BY articles.article_id
+  ORDER BY articles.created_at DESC;`;
 
-  const articlesData = db
-    .query('SELECT * FROM articles ORDER BY created_at DESC;')
-    .then(({ rows }) => {
-      articlesArray = rows;
-    });
-  const commentsData = db.query('SELECT * FROM comments;').then(({ rows }) => {
-    commentsArray = rows;
-  });
-
-  return Promise.all([articlesData, commentsData]).then(() => {
-    return articlesArray.map((articleObj) => {
-      let comments = 0;
-      let articleId = articleObj.article_id;
-      commentsArray.forEach((commentsObj) => {
-        if (commentsObj.article_id === articleId) {
-          comments++;
-        }
-      });
-      delete articleObj.body;
-      articleObj.comment_count = comments;
-      return articleObj;
-    });
-  });
+  return db.query(queryString).then(({ rows }) => rows);
 };
