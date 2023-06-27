@@ -198,7 +198,6 @@ describe('get api/articles', () => {
       .get('/api/articles')
       .expect(200)
       .then(({ body }) => {
-        console.log(body);
         expect(body.articles.length).toBe(13);
         expect(body.articles).toBeSortedBy('created_at', { descending: true });
       });
@@ -217,6 +216,75 @@ describe('get api/articles', () => {
         )[4];
         expect(articleOne.comment_count).toBe('11');
         expect(articleFive.comment_count).toBe('2');
+      });
+  });
+});
+
+describe('get /api/articles/:article_id/comments', () => {
+  it('should return 200 for a valid request', () => {
+    return request(app).get('/api/articles/1/comments').expect(200);
+  });
+
+  it('should return with an array on comments key of response object for a valid request', () => {
+    return request(app)
+      .get('/api/articles/1/comments')
+      .expect(200)
+      .then(({ body }) => {
+        expect(Array.isArray(body.comments)).toBe(true);
+      });
+  });
+
+  it('should serve an empty array on articles without comments', () => {
+    return request(app)
+      .get('/api/articles/7/comments')
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comments).toEqual([]);
+      });
+  });
+
+  it('comments should be ordered with most recent first', () => {
+    return request(app)
+      .get('/api/articles/1/comments')
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comments.length).toBe(11);
+        expect(body.comments).toBeSortedBy('created_at', { descending: true });
+      });
+  });
+
+  it('correct comments should be pulled through', () => {
+    const expectedComments = [];
+    return request(app)
+      .get('/api/articles/6/comments')
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comments.length).toBe(1);
+        expect(body.comments[0]).toMatchObject({
+          comment_id: expect.any(Number),
+          votes: 1,
+          author: 'butter_bridge',
+          article_id: 6,
+          created_at: '2020-10-11T15:23:00.000Z',
+        });
+      });
+  });
+
+  it('invalid id formats should be rejected with a 400 and appropriate message', () => {
+    return request(app)
+      .get('/api/articles/financialtimes/comments')
+      .expect(400)
+      .catch((e) => {
+        expect(e.message).toBe('bad request: article id must be an integer');
+      });
+  });
+
+  it('Valid formatted but non-existent id should be rejected with a 404 and appropriate message', () => {
+    return request(app)
+      .get('/api/articles/9999/comments')
+      .expect(404)
+      .catch((e) => {
+        expect(e.message).toBe('no article with this id exists');
       });
   });
 });
