@@ -3,6 +3,7 @@ const { contentsController } = require('./api.controllers.js');
 const {
   getArticleController,
   getAllArticlesController,
+  postCommentController,
   getArticleCommentsController,
   patchArticleVotesController,
 } = require('./articles.controllers.js');
@@ -22,6 +23,7 @@ module.exports = {
   customErrorController,
   serverErrorController,
   getAllArticlesController,
+  postCommentController,
   getArticleCommentsController,
   patchArticleVotesController,
 };

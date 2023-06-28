@@ -3,6 +3,7 @@ const {
   getAllArticlesModel,
   getArticleCommentsModel,
   patchArticleVotesModel,
+  postCommentModel,
 } = require('../models');
 
 exports.getArticleController = (req, res, next) => {
@@ -37,11 +38,6 @@ exports.getArticleCommentsController = (req, res, next) => {
 
   return getArticleCommentsModel(articleId)
     .then((modelResponse) => {
-      if (!modelResponse) {
-        return res
-          .status(404)
-          .send({ message: 'no article with this id exists' });
-      }
       return res.status(200).send({ comments: modelResponse.rows });
     })
     .catch(next);
@@ -60,6 +56,24 @@ exports.patchArticleVotesController = (req, res, next) => {
   return patchArticleVotesModel(articleId, req.body.inc_votes)
     .then(({ rows }) => {
       return res.status(200).send({ updatedArticle: rows[0] });
+    })
+    .catch(next);
+};
+
+exports.postCommentController = (req, res, next) => {
+  const commentObj = req.body;
+
+  if (!commentObj || !commentObj.username || !commentObj.body) {
+    return res.status(400).send({
+      message:
+        'post request must be accompanied by a comment object with valid username and body keys',
+    });
+  }
+  const articleId = req.params.article_id;
+
+  return postCommentModel(articleId, commentObj.username, commentObj.body)
+    .then(({ rows }) => {
+      return res.status(201).send({ postedComment: rows[0] });
     })
     .catch(next);
 };
