@@ -18,3 +18,16 @@ exports.getAllArticlesModel = () => {
 
   return db.query(queryString).then(({ rows }) => rows);
 };
+
+exports.postCommentModel = (articleId, username, body) => {
+  const queryString = `INSERT INTO comments VALUES (
+    default,
+    $1,
+    $2,
+    $3,
+    0,
+    default
+  ) RETURNING *`;
+
+  return db.query(queryString, [body, articleId, username]);
+};

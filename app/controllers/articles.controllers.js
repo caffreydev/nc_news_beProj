@@ -22,3 +22,5 @@ exports.getAllArticlesController = (_, res) => {
     res.status(200).send({ articles: articles });
   });
 };
+
+exports.postCommentController = (req, res, next) => {};

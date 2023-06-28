@@ -3,6 +3,7 @@ const { contentsController } = require('./api.controllers.js');
 const {
   getArticleController,
   getAllArticlesController,
+  postCommentController,
 } = require('./articles.controllers.js');
 const {
   badPathController,
@@ -20,4 +21,5 @@ module.exports = {
   customErrorController,
   serverErrorController,
   getAllArticlesController,
+  postCommentController,
 };
