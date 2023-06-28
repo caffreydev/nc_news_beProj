@@ -3,15 +3,13 @@ exports.badPathController = (_, res) => {
 };
 
 exports.customErrorController = (err, req, res, next) => {
-  if (err.message) {
-    console.log(err);
+  if (err.message && err.status) {
     res.status(err.status).send({ message: err.message });
   } else next(err);
 };
 
 exports.psqlErrorController = (err, req, res, next) => {
-  if (err.code === '22PO2') {
-    console.log(err);
+  if (err.code == '22P02') {
     res.status(400).send({ message: 'bad request' });
   } else next(err);
 };
