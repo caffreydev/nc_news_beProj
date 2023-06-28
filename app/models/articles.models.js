@@ -58,7 +58,7 @@ exports.patchArticleVotesModel = (articleId, voteChange) => {
   return db.query(queryString, [voteChange, articleId]).then(({ rows }) => {
     if (rows.length === 0) {
       return Promise.reject({
-        status: 400,
+        status: 404,
         message: `no article with an id of ${articleId}`,
       });
     }

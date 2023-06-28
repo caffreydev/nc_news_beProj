@@ -440,7 +440,6 @@ describe('patch /api/articles:article_id', () => {
   });
 
   it('should respond with a 400 and useful message if missing patch object', () => {
-    const newVote = { inc_votes: 10000 };
     return request(app)
       .patch('/api/articles/4')
       .expect(400)
@@ -464,12 +463,12 @@ describe('patch /api/articles:article_id', () => {
       });
   });
 
-  it('should respond with a 400 and useful bad request message if article id is non existent', () => {
+  it('should respond with a 404 and useful bad request message if article id is non existent', () => {
     const newVote = { inc_votes: 10000 };
     return request(app)
       .patch('/api/articles/9999')
       .send(newVote)
-      .expect(400)
+      .expect(404)
       .then(({ body }) => {
         expect(body.message).toBe('no article with an id of 9999');
       });
