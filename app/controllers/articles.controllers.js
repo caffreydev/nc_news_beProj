@@ -2,6 +2,7 @@ const {
   getArticleModel,
   getAllArticlesModel,
   getArticleCommentsModel,
+  patchArticleVotesModel,
   postCommentModel,
 } = require('../models');
 
@@ -38,6 +39,23 @@ exports.getArticleCommentsController = (req, res, next) => {
   return getArticleCommentsModel(articleId)
     .then((modelResponse) => {
       return res.status(200).send({ comments: modelResponse.rows });
+    })
+    .catch(next);
+};
+
+exports.patchArticleVotesController = (req, res, next) => {
+  if (!req.body || !req.body.inc_votes) {
+    return res.status(400).send({
+      message:
+        'patch request must be accompanied with an object with inc_votes key',
+    });
+  }
+
+  const articleId = req.params.article_id;
+
+  return patchArticleVotesModel(articleId, req.body.inc_votes)
+    .then(({ rows }) => {
+      return res.status(200).send({ updatedArticle: rows[0] });
     })
     .catch(next);
 };
