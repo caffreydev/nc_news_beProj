@@ -1,11 +1,9 @@
 const { getTopicsModel } = require('../models');
 
-exports.getTopicsController = (req, res) => {
+exports.getTopicsController = (req, res, next) => {
   return getTopicsModel()
-    .then((topicsArray) => {
-      res.status(200).send({ topics: topicsArray });
+    .then(({ rows }) => {
+      return res.status(200).send({ topics: rows });
     })
-    .catch((e) => {
-      res.status(404).send({ message: 'Resource not found' });
-    });
+    .catch(next);
 };

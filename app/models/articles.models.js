@@ -19,6 +19,23 @@ exports.getAllArticlesModel = () => {
   return db.query(queryString).then(({ rows }) => rows);
 };
 
+exports.getArticleCommentsModel = (articleId) => {
+  return db
+    .query('SELECT article_id FROM articles WHERE article_id=$1', [articleId])
+    .then(({ rows }) => {
+      if (rows.length === 0) {
+        return Promise.reject({
+          status: 404,
+          message: `no article with an id of ${articleId}`,
+        });
+      } else {
+        const queryString =
+          'SELECT * FROM comments WHERE article_id=$1 ORDER BY created_at DESC';
+        return db.query(queryString, [articleId]);
+      }
+    });
+};
+
 exports.postCommentModel = (articleId, username, body) => {
   const queryString = `INSERT INTO comments VALUES (
     default,

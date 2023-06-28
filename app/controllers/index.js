@@ -4,6 +4,7 @@ const {
   getArticleController,
   getAllArticlesController,
   postCommentController,
+  getArticleCommentsController,
 } = require('./articles.controllers.js');
 const {
   badPathController,
@@ -22,4 +23,5 @@ module.exports = {
   serverErrorController,
   getAllArticlesController,
   postCommentController,
+  getArticleCommentsController,
 };

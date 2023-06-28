@@ -10,12 +10,14 @@ const {
   contentsController,
   getArticleController,
   getAllArticlesController,
+  getArticleCommentsController,
 } = require('./controllers');
 
 app.get('/api/topics', getTopicsController);
 app.get('/api', contentsController);
 app.get('/api/articles/:article_id', getArticleController);
 app.get('/api/articles', getAllArticlesController);
+app.get('/api/articles/:article_id/comments', getArticleCommentsController);
 app.all('*', badPathController);
 
 app.use(customErrorController);
