@@ -19,8 +19,8 @@ describe('invalid endpoints should throw an error and send an invalid path messa
     return request(app)
       .get('/api/nonexistentpath')
       .expect(404)
-      .catch((e) => {
-        expect(e).toEqual({ message: 'invalid path' });
+      .then(({ body }) => {
+        expect(body.message).toBe('invalid path');
       });
   });
 });
@@ -126,9 +126,8 @@ describe('GET api/articles/:article_id', () => {
     return request(app)
       .get('/api/articles/99999')
       .expect(404)
-      .catch((e) => {
-        console.log(e);
-        expect(e.message).toEqual('resource not found');
+      .then(({ body }) => {
+        expect(body.message).toBe('resource not found');
       });
   });
 
@@ -136,11 +135,8 @@ describe('GET api/articles/:article_id', () => {
     return request(app)
       .get('/api/articles/chocolatecake')
       .expect(400)
-      .catch((e) => {
-        console.log(e);
-        expect(e).toEqual({
-          message: 'bad request: article id must be an integer',
-        });
+      .then(({ body }) => {
+        expect(body.message).toBe('bad request: article id must be an integer');
       });
   });
 
@@ -148,10 +144,8 @@ describe('GET api/articles/:article_id', () => {
     return request(app)
       .get('/api/articles/3.2')
       .expect(400)
-      .catch((e) => {
-        expect(e).toEqual({
-          message: 'bad request: article id must be an integer',
-        });
+      .then(({ body }) => {
+        expect(body.message).toBe('bad request: article id must be an integer');
       });
   });
 });
@@ -234,6 +228,25 @@ describe('get /api/articles/:article_id/comments', () => {
       });
   });
 
+  it('should return with an array of correct comment objects for a valid request', () => {
+    return request(app)
+      .get('/api/articles/1/comments')
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comments.length).toBe(11);
+
+        body.comments.forEach((comment) => {
+          expect(comment).toMatchObject({
+            comment_id: expect.any(Number),
+            votes: expect.any(Number),
+            author: expect.any(String),
+            article_id: 1,
+            created_at: expect.any(String),
+          });
+        });
+      });
+  });
+
   it('should serve an empty array on articles without comments', () => {
     return request(app)
       .get('/api/articles/7/comments')
@@ -274,8 +287,8 @@ describe('get /api/articles/:article_id/comments', () => {
     return request(app)
       .get('/api/articles/financialtimes/comments')
       .expect(400)
-      .catch((e) => {
-        expect(e.message).toBe('bad request: article id must be an integer');
+      .then(({ body }) => {
+        expect(body.message).toBe('bad request');
       });
   });
 
@@ -283,8 +296,8 @@ describe('get /api/articles/:article_id/comments', () => {
     return request(app)
       .get('/api/articles/9999/comments')
       .expect(404)
-      .catch((e) => {
-        expect(e.message).toBe('no article with this id exists');
+      .then(({ body }) => {
+        expect(body.message).toBe('no article with an id of 9999');
       });
   });
 });

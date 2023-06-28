@@ -24,7 +24,10 @@ exports.getArticleCommentsModel = (articleId) => {
     .query('SELECT article_id FROM articles WHERE article_id=$1', [articleId])
     .then(({ rows }) => {
       if (rows.length === 0) {
-        return;
+        return Promise.reject({
+          status: 404,
+          message: `no article with an id of ${articleId}`,
+        });
       } else {
         const queryString =
           'SELECT * FROM comments WHERE article_id=$1 ORDER BY created_at DESC';
