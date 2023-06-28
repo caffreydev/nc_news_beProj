@@ -301,3 +301,114 @@ describe('get /api/articles/:article_id/comments', () => {
       });
   });
 });
+
+describe('post /api/articles:article_id/comments', () => {
+  it('valid request should respond with a 201 status', () => {
+    const commentObject = {
+      username: 'lurker',
+      body: 'this is a truly wonderful piece of journalism',
+    };
+    return request(app)
+      .post('/api/articles/1/comments')
+      .send(commentObject)
+      .expect(201);
+  });
+
+  it('valid request should respond with the posted comment, with an attached id', () => {
+    const commentObject = {
+      username: 'lurker',
+      body: 'this is a truly wonderful piece of journalism',
+    };
+    return request(app)
+      .post('/api/articles/1/comments')
+      .send(commentObject)
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.postedComment).toMatchObject({
+          comment_id: expect.any(Number),
+          body: 'this is a truly wonderful piece of journalism',
+          article_id: 1,
+          author: 'lurker',
+          votes: 0,
+          created_at: expect.any(String),
+        });
+      });
+  });
+
+  it('unecessary extra keys should be ignored', () => {
+    const commentObject = {
+      username: 'lurker',
+      body: 'this is a truly wonderful piece of journalism',
+      spare: 'this key is pointless',
+    };
+    return request(app)
+      .post('/api/articles/1/comments')
+      .send(commentObject)
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.postedComment.hasOwnProperty('spare')).toBe(false);
+        expect(body.postedComment).toMatchObject({
+          comment_id: expect.any(Number),
+          body: 'this is a truly wonderful piece of journalism',
+          article_id: 1,
+          author: 'lurker',
+          votes: 0,
+          created_at: expect.any(String),
+        });
+      });
+  });
+
+  it('requests that are made without a request object should receive a 400 status and useful comment', () => {
+    return request(app)
+      .post('/api/articles/1/comments')
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe(
+          'post request must be accompanied by a comment object with valid username and body keys'
+        );
+      });
+  });
+
+  it('request for an article id that does not exist should trigger a 400 response and message bad request', () => {
+    const commentObject = {
+      username: 'lurker',
+      body: 'this is a truly wonderful piece of journalism',
+    };
+    return request(app)
+      .post('/api/articles/9999/comments')
+      .expect(400)
+      .send(commentObject)
+      .then(({ body }) => {
+        expect(body.message).toBe('bad request');
+      });
+  });
+
+  it('request with a user that does not exist should trigger a 400 response and message bad request', () => {
+    const commentObject = {
+      username: 'joeblogs',
+      body: 'this is a truly wonderful piece of journalism',
+    };
+    return request(app)
+      .post('/api/articles/2/comments')
+      .expect(400)
+      .send(commentObject)
+      .then(({ body }) => {
+        expect(body.message).toBe('bad request');
+      });
+  });
+
+  it('request with an incomplete comment object should trigger a 400 response and useful error message', () => {
+    const commentObject = {
+      body: 'this is a truly wonderful piece of journalism',
+    };
+    return request(app)
+      .post('/api/articles/2/comments')
+      .expect(400)
+      .send(commentObject)
+      .then(({ body }) => {
+        expect(body.message).toBe(
+          'post request must be accompanied by a comment object with valid username and body keys'
+        );
+      });
+  });
+});

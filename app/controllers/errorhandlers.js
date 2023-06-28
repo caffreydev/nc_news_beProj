@@ -9,11 +9,12 @@ exports.customErrorController = (err, req, res, next) => {
 };
 
 exports.psqlErrorController = (err, req, res, next) => {
-  if (err.code == '22P02') {
+  if (err.code === '22P02' || '23503') {
     res.status(400).send({ message: 'bad request' });
   } else next(err);
 };
 
 exports.serverErrorController = (err, req, res, next) => {
+  console.log(err);
   res.status(500).send({ message: 'server error' });
 };
