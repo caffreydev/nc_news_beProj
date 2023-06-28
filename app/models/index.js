@@ -6,6 +6,7 @@ const {
   getArticleCommentsModel,
   postCommentModel,
 } = require('./articles.models');
+const { deleteCommentModel } = require('./comments.models');
 
 module.exports = {
   getTopicsModel,
@@ -14,4 +15,5 @@ module.exports = {
   getAllArticlesModel,
   getArticleCommentsModel,
   postCommentModel,
+  deleteCommentModel,
 };

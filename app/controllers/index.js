@@ -13,6 +13,8 @@ const {
   serverErrorController,
 } = require('./errorhandlers.js');
 
+const { deleteCommentController } = require('./comments.controllers.js');
+
 module.exports = {
   getTopicsController,
   contentsController,
@@ -24,4 +26,5 @@ module.exports = {
   getAllArticlesController,
   postCommentController,
   getArticleCommentsController,
+  deleteCommentController,
 };
