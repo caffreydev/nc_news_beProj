@@ -41,8 +41,8 @@ exports.getAllArticlesController = (req, res, next) => {
   }
 
   return getAllArticlesModel(topic, sort_by, order)
-    .then((articles) => {
-      res.status(200).send({ articles: articles });
+    .then(({ rows }) => {
+      res.status(200).send({ articles: rows });
     })
     .catch(next);
 };

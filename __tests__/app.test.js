@@ -602,12 +602,21 @@ describe('feature: queries on get /api/articles', () => {
       });
   });
 
-  it('should respond appropriately with a 404 and resource not found if queried with nonexistent collumn', () => {
+  it('should respond appropriately with a 200 and empty array if queried with valid topic but no articles', () => {
+    return request(app)
+      .get('/api/articles?topic=paper')
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toEqual([]);
+      });
+  });
+
+  it('should respond appropriately with a 404 and message if queried with nonexistent collumn', () => {
     return request(app)
       .get('/api/articles?topic=chocolatecake')
       .expect(404)
       .then(({ body }) => {
-        expect(body.message).toBe('resource not found');
+        expect(body.message).toBe('topic chocolatecake not found');
       });
   });
 
