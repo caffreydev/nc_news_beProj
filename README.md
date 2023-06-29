@@ -15,7 +15,7 @@ Hosted production server: https://nc-news-jm.onrender.com
 This is a Javascript back end project piece centered around an api server supported by a sql database with several linked tables.  The code and instructions within this repo are everything needed to allow you to pull your own version to host development and/or test servers and databases locally.  There is also a hosted production server (linked above), and hosted production database, allowing you to explore the functionality direct from your browser.
 
 <br>
-The database runs on PostgreSQL contains 4 tables: articles, topics that the articles cover, comments on those articles, and users who comments are posted by.  Each of these tables is linked by foreign key relationships.  
+The database runs on PostgreSQL accessed by Node pg contains 4 tables: articles, topics that the articles cover, comments on those articles, and users who comments are posted by.  Each of these tables is linked by foreign key relationships.  
 
 <br>
 
