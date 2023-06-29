@@ -15,8 +15,10 @@ const {
 } = require('./errorhandlers.js');
 const { deleteCommentController } = require('./comments.controllers.js');
 const { getAllUsersController } = require('./users.controllers.js');
+const { landingPageController } = require('./landingPage.controller.js');
 
 module.exports = {
+  landingPageController,
   getTopicsController,
   contentsController,
   getArticleController,
