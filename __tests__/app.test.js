@@ -440,7 +440,6 @@ describe('patch /api/articles:article_id', () => {
   });
 
   it('should respond with a 400 and useful message if missing patch object', () => {
-    const newVote = { inc_votes: 10000 };
     return request(app)
       .patch('/api/articles/4')
       .expect(400)
@@ -469,7 +468,7 @@ describe('patch /api/articles:article_id', () => {
     return request(app)
       .patch('/api/articles/9999')
       .send(newVote)
-      .expect(400)
+      .expect(404)
       .then(({ body }) => {
         expect(body.message).toBe('no article with an id of 9999');
       });
@@ -477,6 +476,17 @@ describe('patch /api/articles:article_id', () => {
 
   it('should respond with a 400 and bad request message if article id is incorrectly formatted', () => {
     const newVote = { inc_votes: 10000 };
+    return request(app)
+      .patch('/api/articles/dailytelegraph')
+      .send(newVote)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe('bad request');
+      });
+  });
+
+  it('should respond with a 400 and bad request message if inc votes has invalid formatted value', () => {
+    const newVote = { inc_votes: 'apples' };
     return request(app)
       .patch('/api/articles/dailytelegraph')
       .send(newVote)
