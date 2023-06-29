@@ -25,7 +25,7 @@ A full description of functionality is available in a JSON contents page with a 
 
 <br>
 
-Feel free to just use the hosted server to explore the project, in which case most of the following readme won't be needed - you are good to go, just visit https://nc-news-jm.onrender.com/api for the list of endpoints and you can start playing around in your browser!
+Feel free to just use the hosted server to explore the project, in which case most of the following readme won't be needed - you are good to go, just visit https://nc-news-jm.onrender.com/api for the list of endpoints and you can start playing around in your browser!  Do note though that your browser will only be able to serve the GET methods, you may wish to consider using an app like Insomnia to explore the post, patch, and delete methods.
 
 <br>
 
