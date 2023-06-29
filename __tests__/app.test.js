@@ -94,7 +94,7 @@ describe('GET /api', () => {
   });
 });
 
-describe.skip('GET api/articles/:article_id', () => {
+describe('GET api/articles/:article_id', () => {
   it('should return a 200 status code if called correctly', () => {
     return request(app).get('/api/articles/1').expect(200);
   });
@@ -109,7 +109,7 @@ describe.skip('GET api/articles/:article_id', () => {
   });
 
   it('should return correct object for id of 1', () => {
-    const firstArticle = { ...data.articleData[0] };
+    const firstArticle = { ...data.articleData[0], comment_count: '11' };
     let creationDate = new Date(firstArticle.created_at - 3600000); //adjustment for bst
     firstArticle.created_at = creationDate.toISOString();
     firstArticle.article_id = 1;

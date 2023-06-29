@@ -10,12 +10,11 @@ exports.getArticleModel = (articleId) => {
   FROM articles 
   LEFT JOIN comments
   ON articles.article_id=comments.article_id
-  WHERE articles.article_id=$1
+  WHERE articles.article_id=%s
   GROUP BY articles.article_id
   ORDER BY articles.created_at DESC;`,
     articleId
   );
-  console.log(queryString);
   return db.query(queryString).then(({ rows }) => rows);
 };
 
