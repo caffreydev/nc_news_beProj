@@ -537,3 +537,44 @@ describe('delete /api/comments/:comment_id', () => {
       });
   });
 });
+
+describe('get /api/users', () => {
+  it('should give a 200 for a request', () => {
+    return request(app).get('/api/users').expect(200);
+  });
+
+  it('response body should have an array on a key of users', () => {
+    return request(app)
+      .get('/api/users')
+      .expect(200)
+      .then(({ body }) => {
+        expect(Array.isArray(body.users)).toBe(true);
+      });
+  });
+
+  it('response array should be composed of objects of the right format', () => {
+    return request(app)
+      .get('/api/users')
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.users.length).toBe(4);
+        body.users.forEach((user) => {
+          expect(user).toMatchObject({
+            username: expect.any(String),
+            name: expect.any(String),
+            avatar_url: expect.any(String),
+          });
+          expect(Object.keys(user).length).toBe(3);
+        });
+      });
+  });
+
+  it('response array should contain the test users', () => {
+    return request(app)
+      .get('/api/users')
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.users).toEqual(data.userData);
+      });
+  });
+});
