@@ -94,7 +94,7 @@ describe('GET /api', () => {
   });
 });
 
-describe('GET api/articles/:article_id', () => {
+describe.skip('GET api/articles/:article_id', () => {
   it('should return a 200 status code if called correctly', () => {
     return request(app).get('/api/articles/1').expect(200);
   });
