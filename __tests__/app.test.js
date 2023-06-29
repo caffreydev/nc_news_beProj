@@ -599,6 +599,9 @@ describe('feature: queries on get /api/articles', () => {
       .then(({ body }) => {
         expect(body.articles.length).toBe(12);
         expect(body.articles).toBeSortedBy('title');
+        body.articles.forEach((article) => {
+          expect(article.topic).toBe('mitch');
+        });
       });
   });
 
@@ -617,6 +620,15 @@ describe('feature: queries on get /api/articles', () => {
       .expect(404)
       .then(({ body }) => {
         expect(body.message).toBe('topic chocolatecake not found');
+      });
+  });
+
+  it('should respond appropriately with a 400 and bad request if queried with invalid sort by', () => {
+    return request(app)
+      .get('/api/articles?sort_by=impressions')
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe('bad request');
       });
   });
 
