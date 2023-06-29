@@ -578,3 +578,45 @@ describe('get /api/users', () => {
       });
   });
 });
+
+describe('feature: queries on get /api/articles', () => {
+  it('should return a 200 status code and mitch only articles if called correctly with topic query', () => {
+    return request(app)
+      .get('/api/articles?topic=mitch')
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles.length).toBe(12);
+        body.articles.forEach((article) => {
+          expect(article.topic).toBe('mitch');
+        });
+      });
+  });
+
+  it('should respond appropriately to 3 queries and succesfully sort by specified collumn', () => {
+    return request(app)
+      .get('/api/articles?topic=mitch&sort_by=title&order=asc')
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles.length).toBe(12);
+        expect(body.articles).toBeSortedBy('title');
+      });
+  });
+
+  it('should respond appropriately with a 404 and resource not found if queried with nonexistent collumn', () => {
+    return request(app)
+      .get('/api/articles?topic=chocolatecake')
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.message).toBe('resource not found');
+      });
+  });
+
+  it('should respond appropriately with a 400 and bad request if queried with invalid sort order', () => {
+    return request(app)
+      .get('/api/articles?order=alphabetical')
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe('bad request');
+      });
+  });
+});
