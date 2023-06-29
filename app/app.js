@@ -13,9 +13,8 @@ const {
   getArticleCommentsController,
   patchArticleVotesController,
   postCommentController,
+  deleteCommentController,
 } = require('./controllers');
-
-app.use(express.json());
 
 app.use(express.json());
 
@@ -26,6 +25,7 @@ app.get('/api/articles', getAllArticlesController);
 app.get('/api/articles/:article_id/comments', getArticleCommentsController);
 app.patch('/api/articles/:article_id', patchArticleVotesController);
 app.post('/api/articles/:article_id/comments', postCommentController);
+app.delete('/api/comments/:comment_id', deleteCommentController);
 app.all('*', badPathController);
 
 app.use(customErrorController);
