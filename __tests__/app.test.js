@@ -496,3 +496,44 @@ describe('patch /api/articles:article_id', () => {
       });
   });
 });
+
+describe('delete /api/comments/:comment_id', () => {
+  it('should respond with a 204 and no response for a valid id', () => {
+    return request(app)
+      .delete('/api/comments/2')
+      .expect(204)
+      .then(({ body }) => {
+        expect(body).toEqual({});
+      });
+  });
+
+  it('specified comment should be removed from database as required', () => {
+    return request(app)
+      .delete('/api/comments/2')
+      .expect(204)
+      .then(() => {
+        return db.query('SELECT * FROM comments WHERE comment_id=2');
+      })
+      .then(({ rows }) => {
+        expect(rows.length).toBe(0);
+      });
+  });
+
+  it('should serve a 404 and error message for a non existent but validly formatted id', () => {
+    return request(app)
+      .delete('/api/comments/99999')
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.message).toEqual('no comment with an id of 99999');
+      });
+  });
+
+  it('should serve a 400 and bad request message for a badly formatted id', () => {
+    return request(app)
+      .delete('/api/comments/myopinion')
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toEqual('bad request');
+      });
+  });
+});

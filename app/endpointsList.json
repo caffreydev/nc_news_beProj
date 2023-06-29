@@ -96,5 +96,11 @@
       "inc_votes": 10000
     }
 
+  },
+
+  "DELETE /api/comments/:comment_id": {
+    "description": "deletes specified comment from database, no content response",
+    "queries": [],
+    "exampleResponse": {}
   }
 }
