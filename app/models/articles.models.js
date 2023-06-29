@@ -48,3 +48,20 @@ exports.postCommentModel = (articleId, username, body) => {
 
   return db.query(queryString, [body, articleId, username]);
 };
+
+exports.patchArticleVotesModel = (articleId, voteChange) => {
+  const queryString = `UPDATE articles
+   SET votes = votes + $1
+   WHERE article_id = $2
+   RETURNING *`;
+
+  return db.query(queryString, [voteChange, articleId]).then(({ rows }) => {
+    if (rows.length === 0) {
+      return Promise.reject({
+        status: 404,
+        message: `no article with an id of ${articleId}`,
+      });
+    }
+    return { rows: rows };
+  });
+};
