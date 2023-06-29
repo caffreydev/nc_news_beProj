@@ -27,8 +27,8 @@
   }
   },
   "GET /api/articles": {
-    "description": "serves an array of all articles ordered in descending order- removes their body property and adds a comment count property",
-    "queries": [],
+    "description": "serves an array of all articles, filtered by topic specified in query, and in specified order (see query options). The body property is removed and adds a comment count property",
+    "queries": ["topic(any topic - defaults to all)", "sort_by(any collumn - defaults to created_at)", "order(asc/desc default desc)"],
     "exampleResponse": {"articles": [{
       "author": "icellusedkars",
       "title": "Eight pug gifs that remind me of mitch",
@@ -38,7 +38,7 @@
       "votes": 0,
       "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
       "comment_count": "2"
-    }, "...more objects"]
+    }, "...more articles"]
     }
   },
 
