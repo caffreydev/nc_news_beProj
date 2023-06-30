@@ -706,3 +706,78 @@ describe('/api/users/:username', () => {
       });
   });
 });
+
+describe('patch /api/comments/:comment_id', () => {
+  it('should return a 200 for valid comment id and req body', () => {
+    return request(app)
+      .patch('/api/comments/1')
+      .send({ inc_votes: 100 })
+      .expect(200);
+  });
+
+  it('should correctly increment the votes and return updated comment', () => {
+    return request(app)
+      .patch('/api/comments/1')
+      .send({ inc_votes: 100 })
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.updatedComment).toEqual({
+          body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+          votes: 116,
+          author: 'butter_bridge',
+          article_id: 9,
+          created_at: '2020-04-06T12:17:00.000Z',
+          comment_id: 1,
+        });
+      });
+  });
+
+  it('a request for a comment id with a correct format but that does not exist should return a 404', () => {
+    return request(app)
+      .patch('/api/comments/9999')
+      .send({ inc_votes: 100 })
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.message).toBe('no comment with an id of 9999');
+      });
+  });
+
+  it('a request for a comment id with an incorrect format should return a 400', () => {
+    return request(app)
+      .patch('/api/comments/abadcommentid')
+      .send({ inc_votes: 100 })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe('bad request');
+      });
+  });
+
+  it('a request sent with no request object should return a 400', () => {
+    return request(app)
+      .patch('/api/comments/1')
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe('bad request');
+      });
+  });
+
+  it('a request sent with request object with wrong key should return a 400', () => {
+    return request(app)
+      .patch('/api/comments/1')
+      .expect(400)
+      .send({ new_votes: 100 })
+      .then(({ body }) => {
+        expect(body.message).toBe('bad request');
+      });
+  });
+
+  it('a request sent with request object with correct key but wrong value type should return a 400', () => {
+    return request(app)
+      .patch('/api/comments/1')
+      .expect(400)
+      .send({ inc_votes: 'one hundred' })
+      .then(({ body }) => {
+        expect(body.message).toBe('bad request');
+      });
+  });
+});

@@ -13,7 +13,10 @@ const {
   customErrorController,
   serverErrorController,
 } = require('./errorhandlers.js');
-const { deleteCommentController } = require('./comments.controllers.js');
+const {
+  deleteCommentController,
+  patchCommentController,
+} = require('./comments.controllers.js');
 const {
   getAllUsersController,
   getUserController,
@@ -36,4 +39,5 @@ module.exports = {
   patchArticleVotesController,
   getAllUsersController,
   getUserController,
+  patchCommentController,
 };
