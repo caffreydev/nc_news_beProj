@@ -18,7 +18,41 @@ exports.getArticleModel = (articleId) => {
   return db.query(queryString).then(({ rows }) => rows);
 };
 
-exports.getAllArticlesModel = (topic, sort_by, order) => {
+exports.getAllArticlesModel = (queries) => {
+  let topic = 'all';
+  let sort_by = 'created_at';
+  let order = 'DESC';
+  let limit = 10;
+  let p = 0;
+
+  if (queries.topic) {
+    topic = queries.topic;
+  }
+  if (queries.sort_by) {
+    sort_by = queries.sort_by;
+  }
+  if (queries.order) {
+    order = queries.order;
+  }
+  if (queries.limit) {
+    limit = queries.limit;
+    if (Number(limit) !== Math.floor(Number(limit))) {
+      return Promise.reject({
+        status: 400,
+        message: 'bad request',
+      });
+    }
+  }
+  if (queries.p) {
+    if (Number(queries.p) !== Math.floor(Number(queries.p))) {
+      return Promise.reject({
+        status: 400,
+        message: 'bad request',
+      });
+    }
+    p += limit * (queries.p - 1);
+  }
+
   const topicCheck = topic === 'all' ? 'mitch' : topic;
   return db
     .query('SELECT * FROM topics WHERE slug = $1', [topicCheck])
@@ -44,12 +78,19 @@ exports.getAllArticlesModel = (topic, sort_by, order) => {
     ON articles.article_id=comments.article_id
     ${topicString}
   GROUP BY articles.article_id
-  ORDER BY articles.%s %s;`,
+  ORDER BY articles.%s %s
+  OFFSET %s;`,
         sort_by,
-        order
+        order,
+        p
       );
 
-      return db.query(queryString);
+      return db.query(queryString).then(({ rows }) => {
+        return {
+          articles: rows.slice(0, limit),
+          total_count: rows.length + p,
+        };
+      });
     });
 };
 

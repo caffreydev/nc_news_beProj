@@ -205,7 +205,7 @@ describe('get api/articles', () => {
       .get('/api/articles')
       .expect(200)
       .then(({ body }) => {
-        expect(body.articles.length).toBe(13);
+        expect(body.articles.length).toBe(10);
         expect(body.articles.hasOwnProperty('body')).toBe(false);
         body.articles.forEach((element) => {
           expect(element.comment_count).not.toBeNaN();
@@ -228,7 +228,7 @@ describe('get api/articles', () => {
       .get('/api/articles')
       .expect(200)
       .then(({ body }) => {
-        expect(body.articles.length).toBe(13);
+        expect(body.articles.length).toBe(10);
         expect(body.articles).toBeSortedBy('created_at', { descending: true });
       });
   });
@@ -621,7 +621,7 @@ describe('feature: queries on get /api/articles', () => {
       .get('/api/articles?topic=mitch')
       .expect(200)
       .then(({ body }) => {
-        expect(body.articles.length).toBe(12);
+        expect(body.articles.length).toBe(10);
         body.articles.forEach((article) => {
           expect(article.topic).toBe('mitch');
         });
@@ -633,7 +633,7 @@ describe('feature: queries on get /api/articles', () => {
       .get('/api/articles?topic=mitch&sort_by=title&order=asc')
       .expect(200)
       .then(({ body }) => {
-        expect(body.articles.length).toBe(12);
+        expect(body.articles.length).toBe(10);
         expect(body.articles).toBeSortedBy('title');
         body.articles.forEach((article) => {
           expect(article.topic).toBe('mitch');
@@ -671,6 +671,75 @@ describe('feature: queries on get /api/articles', () => {
   it('should respond appropriately with a 400 and bad request if queried with invalid sort order', () => {
     return request(app)
       .get('/api/articles?order=alphabetical')
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe('bad request');
+      });
+  });
+});
+
+describe('feature: pagination of /api/articles', () => {
+  //note behaviour with defaults is tested in core feature test
+  it('should limit responses to limit specified', () => {
+    return request(app)
+      .get('/api/articles?limit=5')
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles.length).toBe(5);
+      });
+  });
+
+  it('offset should function correctly', () => {
+    return request(app)
+      .get('/api/articles?limit=5&p=2&sort_by=article_id&order=asc')
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles.length).toBe(5);
+        expect(body.articles[0].article_id).toBe(6);
+      });
+  });
+
+  it('total_count should be calculated correctly', () => {
+    return request(app)
+      .get('/api/articles?limit=5&p=2&sort_by=article_id&order=asc')
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles.length).toBe(5);
+        expect(body.articles[0].article_id).toBe(6);
+        expect(body.total_count).toBe(13);
+      });
+  });
+
+  it('should throw a 400 if limit is specified as non integer', () => {
+    return request(app)
+      .get('/api/articles?limit=11.2&p=2&sort_by=article_id&order=asc')
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe('bad request');
+      });
+  });
+
+  it('should throw a 400 if limit is specified as non number', () => {
+    return request(app)
+      .get('/api/articles?limit=thesky&p=2&sort_by=article_id&order=asc')
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe('bad request');
+      });
+  });
+
+  it('should throw a 400 if page is specified as non integer', () => {
+    return request(app)
+      .get('/api/articles?limit=10&p=3.2&sort_by=article_id&order=asc')
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe('bad request');
+      });
+  });
+
+  it('should throw a 400 if page is specified as non number', () => {
+    return request(app)
+      .get('/api/articles?limit=10&p=pagetwo&sort_by=article_id&order=asc')
       .expect(400)
       .then(({ body }) => {
         expect(body.message).toBe('bad request');
