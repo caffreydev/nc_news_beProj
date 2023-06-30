@@ -996,3 +996,47 @@ describe('post /api/topics', () => {
       });
   });
 });
+
+describe('delete /api/articles/:article_id', () => {
+  it('should delete article and return a 204 if a valid article id', () => {
+    return request(app)
+      .delete('/api/articles/1')
+      .expect(204)
+      .then(() => {
+        return db.query('SELECT * FROM articles WHERE article_id=1');
+      })
+      .then(({ rows }) => {
+        expect(rows.length).toBe(0);
+      });
+  });
+
+  it('delete should cascade through to comments', () => {
+    return request(app)
+      .delete('/api/articles/1')
+      .expect(204)
+      .then(() => {
+        return db.query('SELECT * FROM comments WHERE article_id=1');
+      })
+      .then(({ rows }) => {
+        expect(rows.length).toBe(0);
+      });
+  });
+
+  it('a 404 should be thrown for an article id that is valid format but does not exist', () => {
+    return request(app)
+      .delete('/api/articles/9999')
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.message).toBe('no article with an id of 9999');
+      });
+  });
+
+  it('a 400 should be thrown for an article id with an invalid format', () => {
+    return request(app)
+      .delete('/api/articles/ubuntufordummies')
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe('bad request');
+      });
+  });
+});
