@@ -3,33 +3,29 @@ const app = express();
 
 const {
   landingPageController,
+  contentsController,
   badPathController,
   psqlErrorController,
   customErrorController,
   serverErrorController,
-  getTopicsController,
-  contentsController,
-  getArticleController,
-  getAllArticlesController,
-  getArticleCommentsController,
-  patchArticleVotesController,
-  postCommentController,
-  deleteCommentController,
-  getAllUsersController,
 } = require('./controllers');
+
+const {
+  articleRouter,
+  commentsRouter,
+  usersRouter,
+  topicsRouter,
+} = require('./routers');
 
 app.use(express.json());
 
+app.use('/api/articles', articleRouter);
+app.use('/api/comments', commentsRouter);
+app.use('/api/users', usersRouter);
+app.use('/api/topics', topicsRouter);
+
 app.get('/', landingPageController);
-app.get('/api/topics', getTopicsController);
 app.get('/api', contentsController);
-app.get('/api/articles/:article_id', getArticleController);
-app.get('/api/articles', getAllArticlesController);
-app.get('/api/articles/:article_id/comments', getArticleCommentsController);
-app.patch('/api/articles/:article_id', patchArticleVotesController);
-app.post('/api/articles/:article_id/comments', postCommentController);
-app.delete('/api/comments/:comment_id', deleteCommentController);
-app.get('/api/users', getAllUsersController);
 app.all('*', badPathController);
 
 app.use(customErrorController);

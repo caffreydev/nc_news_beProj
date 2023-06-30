@@ -15,9 +15,45 @@ afterAll(() => {
 });
 
 describe('invalid endpoints should throw an error and send an invalid path message', () => {
-  it('get /api/nonexistentpath should throw error and respond with invalid path', () => {
+  it('get /nonexistentpath should throw error and respond with invalid path', () => {
     return request(app)
-      .get('/api/nonexistentpath')
+      .get('/nonexistentpath')
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.message).toBe('invalid path');
+      });
+  });
+
+  it('articles router should handle invalid paths after the router route', () => {
+    return request(app)
+      .get('/api/articles/guardian/on/sunday')
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.message).toBe('invalid path');
+      });
+  });
+
+  it('comments router should handle invalid paths after the router route', () => {
+    return request(app)
+      .get('/api/comments/opinions/on/this/article')
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.message).toBe('invalid path');
+      });
+  });
+
+  it('users router should handle invalid paths after the router route', () => {
+    return request(app)
+      .get('/api/users/joe/the/opinionated/one')
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.message).toBe('invalid path');
+      });
+  });
+
+  it('topics router should handle invalid paths after the router route', () => {
+    return request(app)
+      .get('/api/articles/topics/from/experts')
       .expect(404)
       .then(({ body }) => {
         expect(body.message).toBe('invalid path');
