@@ -88,4 +88,4 @@ File name ".env.production", File content: `DATBASE_URL=<enter your hosted url h
 <br>
 
 # Tests
-The methods and end points have been rigorously tested for a variety of proper usage and bad usage cases using a combination of jest and supertest, you can explore the jest test suites in the \_\_tests\_\_ folder.  Husky is also included as a dev dependency to run all tests and require they pass before making commits.
+The methods and end points have been rigorously tested for a variety of proper usage and bad usage cases using a combination of jest and supertest, you can explore the jest test suites in the `__tests__` folder.  Husky is also included as a dev dependency to run all tests and require they pass before making commits.
