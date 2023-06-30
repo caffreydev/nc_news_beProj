@@ -36,7 +36,7 @@ exports.getAllArticlesModel = (queries) => {
   }
   if (queries.limit) {
     limit = queries.limit;
-    if (Number(limit) !== Math.floor(Number(limit))) {
+    if (Number(limit) !== Math.floor(limit)) {
       return Promise.reject({
         status: 400,
         message: 'bad request',
@@ -44,7 +44,7 @@ exports.getAllArticlesModel = (queries) => {
     }
   }
   if (queries.p) {
-    if (Number(queries.p) !== Math.floor(Number(queries.p))) {
+    if (Number(queries.p) !== Math.floor(queries.p)) {
       return Promise.reject({
         status: 400,
         message: 'bad request',
@@ -94,7 +94,27 @@ exports.getAllArticlesModel = (queries) => {
     });
 };
 
-exports.getArticleCommentsModel = (articleId) => {
+exports.getArticleCommentsModel = (articleId, limit, p) => {
+  if (!limit) {
+    limit = 10;
+  } else if (Number(limit) !== Math.floor(limit)) {
+    return Promise.reject({
+      status: 400,
+      message: 'bad request',
+    });
+  }
+
+  if (!p) {
+    p = 0;
+  } else if (Number(p) !== Math.floor(p)) {
+    return Promise.reject({
+      status: 400,
+      message: 'bad request',
+    });
+  } else {
+    p = (p - 1) * limit;
+  }
+
   return db
     .query('SELECT article_id FROM articles WHERE article_id=$1', [articleId])
     .then(({ rows }) => {
@@ -105,8 +125,13 @@ exports.getArticleCommentsModel = (articleId) => {
         });
       } else {
         const queryString =
-          'SELECT * FROM comments WHERE article_id=$1 ORDER BY created_at DESC';
-        return db.query(queryString, [articleId]);
+          'SELECT * FROM comments WHERE article_id=$1 ORDER BY created_at DESC OFFSET $2';
+        return db.query(queryString, [articleId, p]).then(({ rows }) => {
+          return {
+            comments: rows.slice(0, limit),
+            total_comments: rows.length + p,
+          };
+        });
       }
     });
 };

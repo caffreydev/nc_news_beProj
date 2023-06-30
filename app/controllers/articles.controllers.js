@@ -37,10 +37,12 @@ exports.getAllArticlesController = (req, res, next) => {
 
 exports.getArticleCommentsController = (req, res, next) => {
   const articleId = req.params.article_id;
+  const limit = req.query.limit;
+  const p = req.query.p;
 
-  return getArticleCommentsModel(articleId)
+  return getArticleCommentsModel(articleId, limit, p)
     .then((modelResponse) => {
-      return res.status(200).send({ comments: modelResponse.rows });
+      return res.status(200).send(modelResponse);
     })
     .catch(next);
 };

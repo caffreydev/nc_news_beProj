@@ -46,8 +46,10 @@
 
   "GET /api/articles/:article_id/comments": {
     "description": "serves an array of all comments on the specified article id, most recent first",
-    "queries": [],
-    "exampleResponse": { "comments": [{
+    "queries": ["limit (number of results, defaults to 10)", "p (page to show, defaults to 1)"],
+    "exampleResponse": { 
+    "total_comments": 11,  
+    "comments": [{
       "comment_id": 5,
       "body": "I hate streaming noses",
       "article_id": 1,
