@@ -770,7 +770,6 @@ describe('feature: pagination of /api/articles', () => {
       .get('/api/articles?limit=5&p=2&sort_by=article_id&order=asc')
       .expect(200)
       .then(({ body }) => {
-        console.log(body);
         expect(body.articles.length).toBe(5);
         expect(body.articles[0].article_id).toBe(6);
       });
