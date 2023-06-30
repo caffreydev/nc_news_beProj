@@ -4,6 +4,7 @@ const {
   getArticleCommentsModel,
   patchArticleVotesModel,
   postCommentModel,
+  postArticleModel,
 } = require('../models');
 
 exports.getArticleController = (req, res, next) => {
@@ -88,6 +89,15 @@ exports.postCommentController = (req, res, next) => {
   return postCommentModel(articleId, commentObj.username, commentObj.body)
     .then(({ rows }) => {
       return res.status(201).send({ postedComment: rows[0] });
+    })
+    .catch(next);
+};
+
+exports.postArticleController = (req, res, next) => {
+  return postArticleModel(req.body)
+    .then(({ rows }) => {
+      rows[0].comment_count = 0;
+      return res.status(201).send({ newArticle: rows[0] });
     })
     .catch(next);
 };

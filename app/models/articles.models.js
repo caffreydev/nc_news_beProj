@@ -99,3 +99,39 @@ exports.patchArticleVotesModel = (articleId, voteChange) => {
     return { rows: rows };
   });
 };
+
+exports.postArticleModel = (article) => {
+  if (!article.body || !article.title) {
+    return Promise.reject({
+      status: 400,
+      message: 'bad request',
+    });
+  }
+
+  const { author, title, body, topic } = article;
+  let article_img_url = 'default';
+  if (article.article_img_url) {
+    article_img_url = "'" + article.article_img_url + "'";
+  }
+
+  const queryString = format(
+    `INSERT INTO articles VALUES (
+    default,
+    '%s',
+    '%s',
+    '%s',
+    '%s',
+    default,
+    default,
+    %s)
+    RETURNING *;
+    `,
+    title,
+    topic,
+    author,
+    body,
+    article_img_url
+  );
+
+  return db.query(queryString);
+};

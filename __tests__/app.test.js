@@ -781,3 +781,154 @@ describe('patch /api/comments/:comment_id', () => {
       });
   });
 });
+
+describe('post /api/articles', () => {
+  it('expect 201 and the posted object when a valid request body sent', () => {
+    return request(app)
+      .post('/api/articles')
+      .send({
+        author: 'lurker',
+        title: 'the merits of express routers',
+        body: 'app code getting too cluttered? Put it all in routers and clean your code base up.',
+        topic: 'paper',
+        article_img_url:
+          'https://i1.sndcdn.com/artworks-000249842344-7waeeo-t500x500.jpg',
+      })
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.newArticle).toMatchObject({
+          author: 'lurker',
+          title: 'the merits of express routers',
+          body: 'app code getting too cluttered? Put it all in routers and clean your code base up.',
+          topic: 'paper',
+          article_img_url:
+            'https://i1.sndcdn.com/artworks-000249842344-7waeeo-t500x500.jpg',
+          created_at: expect.any(String),
+          votes: 0,
+          comment_count: 0,
+          article_id: expect.any(Number),
+        });
+      });
+  });
+
+  it('expect default url to be used when a valid request body sent without specifying article_img_url', () => {
+    return request(app)
+      .post('/api/articles')
+      .send({
+        author: 'lurker',
+        title: 'the merits of express routers',
+        body: 'app code getting too cluttered? Put it all in routers and clean your code base up.',
+        topic: 'paper',
+      })
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.newArticle).toMatchObject({
+          author: 'lurker',
+          title: 'the merits of express routers',
+          body: 'app code getting too cluttered? Put it all in routers and clean your code base up.',
+          topic: 'paper',
+          article_img_url:
+            'https://images.pexels.com/photos/97050/pexels-photo-97050.jpeg?w=700&h=700',
+          created_at: expect.any(String),
+          votes: 0,
+          comment_count: 0,
+          article_id: expect.any(Number),
+        });
+      });
+  });
+
+  it('request send without a request body should throw 400 and bad request', () => {
+    return request(app)
+      .post('/api/articles')
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe('bad request');
+      });
+  });
+
+  it('object missing the required author key should throw a 400', () => {
+    return request(app)
+      .post('/api/articles')
+      .send({
+        title: 'the merits of express routers',
+        body: 'app code getting too cluttered? Put it all in routers and clean your code base up.',
+        topic: 'paper',
+      })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe('bad request');
+      });
+  });
+
+  it('object missing the required title key should throw a 400', () => {
+    return request(app)
+      .post('/api/articles')
+      .send({
+        author: 'lurker',
+        body: 'app code getting too cluttered? Put it all in routers and clean your code base up.',
+        topic: 'paper',
+      })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe('bad request');
+      });
+  });
+
+  it('object missing the required body key should throw a 400', () => {
+    return request(app)
+      .post('/api/articles')
+      .send({
+        author: 'lurker',
+        title: 'the merits of express routers',
+        topic: 'paper',
+      })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe('bad request');
+      });
+  });
+
+  it('object missing a required topic key should throw a 400', () => {
+    return request(app)
+      .post('/api/articles')
+      .send({
+        author: 'lurker',
+        title: 'the merits of express routers',
+        body: 'app code getting too cluttered? Put it all in routers and clean your code base up.',
+      })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe('bad request');
+      });
+  });
+
+  it('object with an invalid topic key should throw a 400', () => {
+    return request(app)
+      .post('/api/articles')
+      .send({
+        author: 'lurker',
+        title: 'the merits of express routers',
+        body: 'app code getting too cluttered? Put it all in routers and clean your code base up.',
+        topic: 'node express',
+      })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe('bad request');
+      });
+  });
+
+  it('object with an invalid author key should throw a 400', () => {
+    return request(app)
+      .post('/api/articles')
+      .send({
+        author: 'joe',
+        title: 'the merits of express routers',
+        body: 'app code getting too cluttered? Put it all in routers and clean your code base up.',
+        topic: 'paper',
+      })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe('bad request');
+      });
+  });
+});

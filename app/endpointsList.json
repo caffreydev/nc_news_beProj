@@ -147,5 +147,31 @@
     "exampleRequestBody": {
       "inc_votes": 100
     }
+  },
+  "POST /api/articles": {
+    "description": "allows posting a new article, must have an existing user as author and existing topic. img_url in below example is optional and will take the default if not specified",
+    "queries": [],
+    "exampleResponse": {
+      "newArticle": {
+        "author": "lurker",
+        "title": "the merits of express routers",
+        "body": "app code getting too cluttered? Put it all in routers and clean your code base up.",
+        "topic": "paper",
+        "article_img_url":
+          "https://images.pexels.com/photos/97050/pexels-photo-97050.jpeg?w=700&h=700",
+        "created_at": "2023-06-30T13:49:52.966Z",
+        "votes": 0,
+        "comment_count": 0,
+        "article_id": 14
+      }
+    },
+    "exampleRequestBody": {
+      "author": "lurker",
+      "title": "the merits of express routers",
+      "body": "app code getting too cluttered? Put it all in routers and clean your code base up.",
+      "topic": "paper",
+      "article_img_url":
+        "https://i1.sndcdn.com/artworks-000249842344-7waeeo-t500x500.jpg",
+    }
   }
 }
