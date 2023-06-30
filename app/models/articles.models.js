@@ -78,17 +78,15 @@ exports.getAllArticlesModel = (queries) => {
     ON articles.article_id=comments.article_id
     ${topicString}
   GROUP BY articles.article_id
-  ORDER BY articles.%s %s
-  OFFSET %s;`,
+  ORDER BY articles.%s %s`,
         sort_by,
-        order,
-        p
+        order
       );
 
       return db.query(queryString).then(({ rows }) => {
         return {
-          articles: rows.slice(0, limit),
-          total_count: rows.length + p,
+          articles: rows.slice(p, p + Number(limit)),
+          total_count: rows.length,
         };
       });
     });
@@ -125,11 +123,11 @@ exports.getArticleCommentsModel = (articleId, limit, p) => {
         });
       } else {
         const queryString =
-          'SELECT * FROM comments WHERE article_id=$1 ORDER BY created_at DESC OFFSET $2';
-        return db.query(queryString, [articleId, p]).then(({ rows }) => {
+          'SELECT * FROM comments WHERE article_id=$1 ORDER BY created_at DESC';
+        return db.query(queryString, [articleId]).then(({ rows }) => {
           return {
-            comments: rows.slice(0, limit),
-            total_comments: rows.length + p,
+            comments: rows.slice(p, p + limit),
+            total_comments: rows.length,
           };
         });
       }

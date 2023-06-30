@@ -367,6 +367,16 @@ describe('feature pagination on get /api/articles/:article_id/comments', () => {
       });
   });
 
+  it('comment count should calculate appropriately and an empty array be served on large page number', () => {
+    return request(app)
+      .get('/api/articles/1/comments?limit=8&p=34')
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comments.length).toBe(0);
+        expect(body.total_comments).toBe(11);
+      });
+  });
+
   it('non integer limit should throw a 400', () => {
     return request(app)
       .get('/api/articles/1/comments?limit=8.2&p=2')
@@ -760,6 +770,7 @@ describe('feature: pagination of /api/articles', () => {
       .get('/api/articles?limit=5&p=2&sort_by=article_id&order=asc')
       .expect(200)
       .then(({ body }) => {
+        console.log(body);
         expect(body.articles.length).toBe(5);
         expect(body.articles[0].article_id).toBe(6);
       });
@@ -772,6 +783,16 @@ describe('feature: pagination of /api/articles', () => {
       .then(({ body }) => {
         expect(body.articles.length).toBe(5);
         expect(body.articles[0].article_id).toBe(6);
+        expect(body.total_count).toBe(13);
+      });
+  });
+
+  it('total_count should be calculated correctly and an empty array served when a large page number is queried', () => {
+    return request(app)
+      .get('/api/articles?limit=5&p=15&sort_by=article_id&order=asc')
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles.length).toBe(0);
         expect(body.total_count).toBe(13);
       });
   });
