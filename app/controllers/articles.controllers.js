@@ -5,6 +5,7 @@ const {
   patchArticleVotesModel,
   postCommentModel,
   postArticleModel,
+  deleteArticleModel,
 } = require('../models');
 
 exports.getArticleController = (req, res, next) => {
@@ -98,6 +99,14 @@ exports.postArticleController = (req, res, next) => {
     .then(({ rows }) => {
       rows[0].comment_count = 0;
       return res.status(201).send({ newArticle: rows[0] });
+    })
+    .catch(next);
+};
+
+exports.deleteArticleController = (req, res, next) => {
+  return deleteArticleModel(req.params.article_id)
+    .then(() => {
+      return res.status(204).end();
     })
     .catch(next);
 };

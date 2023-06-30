@@ -189,5 +189,10 @@
         "description": "irreverent musings of an artistic mind"
       }
     }
+  },
+  "DELETE /api/articles/:article_id": {
+    "description": "allows deleting of the article with specified id, returns no response",
+    "queries": [],
+    "exampleResponse": {}
   }
 }

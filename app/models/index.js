@@ -7,6 +7,7 @@ const {
   patchArticleVotesModel,
   postCommentModel,
   postArticleModel,
+  deleteArticleModel,
 } = require('./articles.models');
 const { deleteCommentModel, patchCommentModel } = require('./comments.models');
 
@@ -26,4 +27,5 @@ module.exports = {
   patchCommentModel,
   postArticleModel,
   postTopicModel,
+  deleteArticleModel,
 };

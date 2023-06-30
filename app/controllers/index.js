@@ -10,6 +10,7 @@ const {
   getArticleCommentsController,
   patchArticleVotesController,
   postArticleController,
+  deleteArticleController,
 } = require('./articles.controllers.js');
 const {
   badPathController,
@@ -46,4 +47,5 @@ module.exports = {
   patchCommentController,
   postArticleController,
   postTopicController,
+  deleteArticleController,
 };

@@ -10,7 +10,6 @@ exports.deleteCommentModel = (commentId) => {
         message: `no comment with an id of ${commentId}`,
       });
     }
-    return Promise.resolve();
   });
 };
 
