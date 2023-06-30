@@ -9,7 +9,7 @@ const {
 } = require('./articles.models');
 const { deleteCommentModel } = require('./comments.models');
 
-const { getAllUsersModel } = require('./users.models');
+const { getAllUsersModel, getUserModel } = require('./users.models');
 
 module.exports = {
   getTopicsModel,
@@ -21,4 +21,5 @@ module.exports = {
   postCommentModel,
   deleteCommentModel,
   getAllUsersModel,
+  getUserModel,
 };
