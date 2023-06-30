@@ -7,7 +7,7 @@ const {
   patchArticleVotesModel,
   postCommentModel,
 } = require('./articles.models');
-const { deleteCommentModel } = require('./comments.models');
+const { deleteCommentModel, patchCommentModel } = require('./comments.models');
 
 const { getAllUsersModel, getUserModel } = require('./users.models');
 
@@ -22,4 +22,5 @@ module.exports = {
   deleteCommentModel,
   getAllUsersModel,
   getUserModel,
+  patchCommentModel,
 };

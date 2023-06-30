@@ -13,3 +13,16 @@ exports.deleteCommentModel = (commentId) => {
     return Promise.resolve();
   });
 };
+
+exports.patchCommentModel = (commentId, votes) => {
+  const queryString = `UPDATE comments SET votes=votes+$2 WHERE comment_id=$1 RETURNING *`;
+  return db.query(queryString, [commentId, votes]).then(({ rows }) => {
+    if (rows.length === 0) {
+      return Promise.reject({
+        status: 404,
+        message: `no comment with an id of ${commentId}`,
+      });
+    }
+    return rows[0];
+  });
+};
