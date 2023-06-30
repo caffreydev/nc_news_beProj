@@ -171,7 +171,23 @@
       "body": "app code getting too cluttered? Put it all in routers and clean your code base up.",
       "topic": "paper",
       "article_img_url":
-        "https://i1.sndcdn.com/artworks-000249842344-7waeeo-t500x500.jpg",
+        "https://i1.sndcdn.com/artworks-000249842344-7waeeo-t500x500.jpg"
+    }
+  },
+  "POST /api/topics": {
+    "description": "allows posting of a new topic, slug and description required",
+    "queries": [],
+    "exampleResponse": {
+      "newTopic": {
+        "slug": "musings",
+        "description": "irreverent musings of an artistic mind"
+      }
+    },
+    "exampleRequestBody": {
+      "newTopic": {
+        "slug": "musings",
+        "description": "irreverent musings of an artistic mind"
+      }
     }
   }
 }

@@ -1,4 +1,4 @@
-const { getTopicsModel } = require('./topics.models');
+const { getTopicsModel, postTopicModel } = require('./topics.models');
 const { contentsModel } = require('./api.models');
 const {
   getArticleModel,
@@ -25,4 +25,5 @@ module.exports = {
   getUserModel,
   patchCommentModel,
   postArticleModel,
+  postTopicModel,
 };
