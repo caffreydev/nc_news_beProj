@@ -677,3 +677,32 @@ describe('feature: queries on get /api/articles', () => {
       });
   });
 });
+
+describe('/api/users/:username', () => {
+  it('should serve a 200 when given a valid username', () => {
+    return request(app).get('/api/users/lurker').expect(200);
+  });
+
+  it('should serve a 200 and the users data with a valid username', () => {
+    return request(app)
+      .get('/api/users/butter_bridge')
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.user).toEqual({
+          username: 'butter_bridge',
+          name: 'jonny',
+          avatar_url:
+            'https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg',
+        });
+      });
+  });
+
+  it('should serve a 404 and appropriate message when sending invalid username format', () => {
+    return request(app)
+      .get('/api/users/bobmarley')
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.message).toBe('no user with username of bobmarley found');
+      });
+  });
+});
