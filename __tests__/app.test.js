@@ -269,7 +269,7 @@ describe('get /api/articles/:article_id/comments', () => {
       .get('/api/articles/1/comments')
       .expect(200)
       .then(({ body }) => {
-        expect(body.comments.length).toBe(11);
+        expect(body.comments.length).toBe(10);
 
         body.comments.forEach((comment) => {
           expect(comment).toMatchObject({
@@ -297,7 +297,7 @@ describe('get /api/articles/:article_id/comments', () => {
       .get('/api/articles/1/comments')
       .expect(200)
       .then(({ body }) => {
-        expect(body.comments.length).toBe(11);
+        expect(body.comments.length).toBe(10);
         expect(body.comments).toBeSortedBy('created_at', { descending: true });
       });
   });
@@ -334,6 +334,72 @@ describe('get /api/articles/:article_id/comments', () => {
       .expect(404)
       .then(({ body }) => {
         expect(body.message).toBe('no article with an id of 9999');
+      });
+  });
+});
+
+describe('feature pagination on get /api/articles/:article_id/comments', () => {
+  it('should restrict responses to the limit queried', () => {
+    return request(app)
+      .get('/api/articles/1/comments?limit=8')
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comments.length).toBe(8);
+      });
+  });
+
+  it('limit and page should work appropriately in combination', () => {
+    return request(app)
+      .get('/api/articles/1/comments?limit=8&p=2')
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comments.length).toBe(3);
+      });
+  });
+
+  it('comment count should calculate appropriately', () => {
+    return request(app)
+      .get('/api/articles/1/comments?limit=8&p=2')
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comments.length).toBe(3);
+        expect(body.total_comments).toBe(11);
+      });
+  });
+
+  it('non integer limit should throw a 400', () => {
+    return request(app)
+      .get('/api/articles/1/comments?limit=8.2&p=2')
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe('bad request');
+      });
+  });
+
+  it('non number limit should throw a 400', () => {
+    return request(app)
+      .get('/api/articles/1/comments?limit=giveall&p=2')
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe('bad request');
+      });
+  });
+
+  it('non integer p should throw a 400', () => {
+    return request(app)
+      .get('/api/articles/1/comments?limit=5&p=2.2')
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe('bad request');
+      });
+  });
+
+  it('non number p should throw a 400', () => {
+    return request(app)
+      .get('/api/articles/1/comments?limit=3&p=1.2')
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe('bad request');
       });
   });
 });
