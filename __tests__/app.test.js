@@ -932,3 +932,67 @@ describe('post /api/articles', () => {
       });
   });
 });
+
+describe('post /api/topics', () => {
+  it('should respond with 201 and posted topic when a valid request body', () => {
+    return request(app)
+      .post('/api/topics')
+      .send({
+        slug: 'musings',
+        description: 'irreverent musings of an artistic mind',
+      })
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.newTopic).toEqual({
+          slug: 'musings',
+          description: 'irreverent musings of an artistic mind',
+        });
+      });
+  });
+
+  it('should return a 400 if sent without a request body', () => {
+    return request(app)
+      .post('/api/topics')
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toEqual('bad request');
+      });
+  });
+
+  it('should respond with 400 if sent a response body without a slug key', () => {
+    return request(app)
+      .post('/api/topics')
+      .send({
+        description: 'irreverent musings of an artistic mind',
+      })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toEqual('bad request');
+      });
+  });
+
+  it('should respond with 400 if sent a response body without a description key', () => {
+    return request(app)
+      .post('/api/topics')
+      .send({
+        slug: 'musings',
+      })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toEqual('bad request');
+      });
+  });
+
+  it('should respond with 400 if slug duplicates an existing topic', () => {
+    return request(app)
+      .post('/api/topics')
+      .send({
+        slug: 'paper',
+        description: 'very useful to write on',
+      })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toEqual('bad request');
+      });
+  });
+});

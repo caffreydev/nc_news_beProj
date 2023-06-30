@@ -1,4 +1,7 @@
-const { getTopicsController } = require('./topics.controllers.js');
+const {
+  getTopicsController,
+  postTopicController,
+} = require('./topics.controllers.js');
 const { contentsController } = require('./api.controllers.js');
 const {
   getArticleController,
@@ -42,4 +45,5 @@ module.exports = {
   getUserController,
   patchCommentController,
   postArticleController,
+  postTopicController,
 };
