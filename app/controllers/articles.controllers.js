@@ -28,23 +28,9 @@ exports.getArticleController = (req, res, next) => {
 };
 
 exports.getAllArticlesController = (req, res, next) => {
-  let topic = 'all';
-  let sort_by = 'created_at';
-  let order = 'DESC';
-
-  if (req.query.topic) {
-    topic = req.query.topic;
-  }
-  if (req.query.sort_by) {
-    sort_by = req.query.sort_by;
-  }
-  if (req.query.order) {
-    order = req.query.order;
-  }
-
-  return getAllArticlesModel(topic, sort_by, order)
-    .then(({ rows }) => {
-      res.status(200).send({ articles: rows });
+  return getAllArticlesModel(req.query)
+    .then((modelData) => {
+      res.status(200).send(modelData);
     })
     .catch(next);
 };
