@@ -1,3 +1,4 @@
 node_modules
 .env.*
 endpoints.json
+error-handling.md

@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 
 const {
+  landingPageController,
   badPathController,
   psqlErrorController,
   customErrorController,
@@ -19,6 +20,7 @@ const {
 
 app.use(express.json());
 
+app.get('/', landingPageController);
 app.get('/api/topics', getTopicsController);
 app.get('/api', contentsController);
 app.get('/api/articles/:article_id', getArticleController);
