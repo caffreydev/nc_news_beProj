@@ -24,9 +24,36 @@ describe('invalid endpoints should throw an error and send an invalid path messa
       });
   });
 
-  it('routers should handle invalid paths after the router route', () => {
+  it('articles router should handle invalid paths after the router route', () => {
     return request(app)
-      .post('/api/articles/guardianonsunday')
+      .get('/api/articles/guardian/on/sunday')
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.message).toBe('invalid path');
+      });
+  });
+
+  it('comments router should handle invalid paths after the router route', () => {
+    return request(app)
+      .get('/api/comments/opinions/on/this/article')
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.message).toBe('invalid path');
+      });
+  });
+
+  it('users router should handle invalid paths after the router route', () => {
+    return request(app)
+      .get('/api/users/joe/the/opinionated/one')
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.message).toBe('invalid path');
+      });
+  });
+
+  it('topics router should handle invalid paths after the router route', () => {
+    return request(app)
+      .get('/api/articles/topics/from/experts')
       .expect(404)
       .then(({ body }) => {
         expect(body.message).toBe('invalid path');
