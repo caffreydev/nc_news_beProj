@@ -15,9 +15,18 @@ afterAll(() => {
 });
 
 describe('invalid endpoints should throw an error and send an invalid path message', () => {
-  it('get /api/nonexistentpath should throw error and respond with invalid path', () => {
+  it('get /nonexistentpath should throw error and respond with invalid path', () => {
     return request(app)
-      .get('/api/nonexistentpath')
+      .get('/nonexistentpath')
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.message).toBe('invalid path');
+      });
+  });
+
+  it('routers should handle invalid paths after the router route', () => {
+    return request(app)
+      .post('/api/articles/guardianonsunday')
       .expect(404)
       .then(({ body }) => {
         expect(body.message).toBe('invalid path');
