@@ -53,11 +53,11 @@ exports.getAllArticlesModel = (queries) => {
     p += limit * (queries.p - 1);
   }
 
-  const topicCheck = topic === 'all' ? 'mitch' : topic;
+  const topicCheck = topic;
   return db
     .query('SELECT * FROM topics WHERE slug = $1', [topicCheck])
     .then(({ rows }) => {
-      if (rows.length === 0) {
+      if (topic !== 'all' && rows.length === 0) {
         return Promise.reject({
           status: 404,
           message: `topic ${topic} not found`,
