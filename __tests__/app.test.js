@@ -106,7 +106,7 @@ describe('GET /api', () => {
     return request(app)
       .get('/api')
       .then(({ body }) => {
-        expect(typeof body.contents).toBe('string');
+        expect(typeof body).toBe('object');
       });
   });
 
@@ -115,8 +115,8 @@ describe('GET /api', () => {
     let fileResponse;
     const appCall = request(app)
       .get('/api')
-      .then(({ body }) => {
-        appResponse = body.contents;
+      .then(({ text }) => {
+        appResponse = text;
       });
     const fileData = fs
       .readFile(`${__dirname}/../app/endpointsList.json`, 'utf8')
