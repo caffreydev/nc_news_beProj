@@ -78,7 +78,7 @@ exports.getAllArticlesModel = (queries) => {
     ON articles.article_id=comments.article_id
     ${topicString}
   GROUP BY articles.article_id
-  ORDER BY articles.%s %s`,
+  ORDER BY %s %s`,
         sort_by,
         order
       );

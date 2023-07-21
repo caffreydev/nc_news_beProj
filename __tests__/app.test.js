@@ -717,6 +717,19 @@ describe('feature: queries on get /api/articles', () => {
       });
   });
 
+  it('should respond appropriately when sorted on comment count', () => {
+    return request(app)
+      .get('/api/articles?topic=mitch&sort_by=comment_count&order=asc')
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles.length).toBe(10);
+        expect(body.articles).toBeSortedBy('comment_count');
+        body.articles.forEach((article) => {
+          expect(article.topic).toBe('mitch');
+        });
+      });
+  });
+
   it('should respond appropriately with a 200 and empty array if queried with valid topic but no articles', () => {
     return request(app)
       .get('/api/articles?topic=paper')
