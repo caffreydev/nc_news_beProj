@@ -278,6 +278,7 @@ describe('get /api/articles/:article_id/comments', () => {
             author: expect.any(String),
             article_id: 1,
             created_at: expect.any(String),
+            avatar_url: expect.any(String),
           });
         });
       });
@@ -315,6 +316,8 @@ describe('get /api/articles/:article_id/comments', () => {
           author: 'butter_bridge',
           article_id: 6,
           created_at: '2020-10-11T15:23:00.000Z',
+          avatar_url:
+            'https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg',
         });
       });
   });

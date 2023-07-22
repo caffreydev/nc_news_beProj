@@ -122,8 +122,14 @@ exports.getArticleCommentsModel = (articleId, limit, p) => {
           message: `no article with an id of ${articleId}`,
         });
       } else {
-        const queryString =
-          'SELECT * FROM comments WHERE article_id=$1 ORDER BY created_at DESC';
+        const queryString = `SELECT comments.comment_id, comments.body, comments.article_id, 
+          comments.author, comments.votes, comments.created_at, users.avatar_url
+          FROM comments 
+          LEFT JOIN users
+          ON comments.author=users.username
+          WHERE comments.article_id=$1
+          GROUP BY comments.comment_id, users.avatar_url
+           ORDER BY created_at DESC`;
         return db.query(queryString, [articleId]).then(({ rows }) => {
           return {
             comments: rows.slice(p, p + limit),
