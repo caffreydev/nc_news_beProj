@@ -20,6 +20,7 @@ exports.getArticleModel = (articleId) => {
 
 exports.getAllArticlesModel = (queries) => {
   let topic = 'all';
+  let author = 'all';
   let sort_by = 'created_at';
   let order = 'DESC';
   let limit = 10;
@@ -27,6 +28,9 @@ exports.getAllArticlesModel = (queries) => {
 
   if (queries.topic) {
     topic = queries.topic;
+  }
+  if (queries.author) {
+    author = queries.author;
   }
   if (queries.sort_by) {
     sort_by = queries.sort_by;
@@ -69,6 +73,11 @@ exports.getAllArticlesModel = (queries) => {
         topicString = format("WHERE articles.topic = '%s'", topic);
       }
 
+      let authorString = '';
+      if (author !== 'all') {
+        authorString = format("WHERE articles.author = '%s'", author);
+      }
+
       const queryString = format(
         `SELECT articles.author, articles.title, articles.article_id, 
     articles.topic, articles.created_at, articles.votes, articles.article_img_url, 
@@ -77,6 +86,7 @@ exports.getAllArticlesModel = (queries) => {
     LEFT JOIN comments
     ON articles.article_id=comments.article_id
     ${topicString}
+    ${authorString}
   GROUP BY articles.article_id
   ORDER BY %s %s`,
         sort_by,

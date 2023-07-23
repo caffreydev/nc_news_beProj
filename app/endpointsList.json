@@ -28,8 +28,8 @@
   }
   },
   "GET /api/articles": {
-    "description": "serves an array of all articles, filtered by topic specified in query, and in specified order (see query options). The body property is removed and adds a comment count property.  Pagination possible by queries limit and p.",
-    "queries": ["topic(any topic - defaults to all)", "sort_by(any collumn - defaults to created_at)", "order(asc/desc default desc)", "limit (number of results, defaults to 10)", "p (page to show, defaults to 1)"],
+    "description": "serves an array of all articles, optionally filtered by topic and author specified in query, and in specified order (see query options). The body property is removed and adds a comment count property.  Pagination possible by queries limit and p.",
+    "queries": ["topic(any topic - defaults to all)", "author(any author - defaults to all)", "sort_by(any collumn - defaults to created_at)", "order(asc/desc default desc)", "limit (number of results, defaults to 10)", "p (page to show, defaults to 1)"],
     "exampleResponse": {"articles": [{
       "author": "icellusedkars",
       "title": "Eight pug gifs that remind me of mitch",

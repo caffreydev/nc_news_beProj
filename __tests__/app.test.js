@@ -695,7 +695,7 @@ describe('get /api/users', () => {
 });
 
 describe('feature: queries on get /api/articles', () => {
-  it('should return a 200 status code and mitch only articles if called correctly with topic query', () => {
+  it('should return a 200 status code and mitch topic only articles if called correctly with topic query', () => {
     return request(app)
       .get('/api/articles?topic=mitch')
       .expect(200)
@@ -703,6 +703,18 @@ describe('feature: queries on get /api/articles', () => {
         expect(body.articles.length).toBe(10);
         body.articles.forEach((article) => {
           expect(article.topic).toBe('mitch');
+        });
+      });
+  });
+
+  it('should return a 200 status code and butter_bridge authored only articles if called correctly with topic query', () => {
+    return request(app)
+      .get('/api/articles?author=butter_bridge')
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles.length).toBe(4);
+        body.articles.forEach((article) => {
+          expect(article.author).toBe('butter_bridge');
         });
       });
   });
