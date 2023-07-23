@@ -1,5 +1,6 @@
 const db = require('../../db/connection');
 const format = require('pg-format');
+const topics = require('../../db/data/development-data/topics');
 
 exports.getArticleModel = (articleId) => {
   const queryString = format(
@@ -75,7 +76,15 @@ exports.getAllArticlesModel = (queries) => {
 
       let authorString = '';
       if (author !== 'all') {
-        authorString = format("WHERE articles.author = '%s'", author);
+        authorString = format("articles.author = '%s'", author);
+      }
+
+      if (topicString.length > 0 && authorString.length > 0) {
+        topicString += ' AND ';
+      }
+
+      if (topicString.length === 0 && authorString.length > 0) {
+        authorString = 'WHERE ' + authorString;
       }
 
       const queryString = format(

@@ -719,6 +719,18 @@ describe('feature: queries on get /api/articles', () => {
       });
   });
 
+  it('should respond appropriately when queried on author and topic', () => {
+    return request(app)
+      .get('/api/articles?author=butter_bridge&topic=mitch')
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles.length).toBe(4);
+        body.articles.forEach((article) => {
+          expect(article.author).toBe('butter_bridge');
+        });
+      });
+  });
+
   it('should respond appropriately to 3 queries and succesfully sort by specified collumn', () => {
     return request(app)
       .get('/api/articles?topic=mitch&sort_by=title&order=asc')
