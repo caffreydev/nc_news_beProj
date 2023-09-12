@@ -9,6 +9,8 @@ Public Github repo: https://github.com/joemccaffrey-dev/nc_news_beProj.git
 
 Hosted production server: https://nc-news-jm.onrender.com 
 
+Frontend Repo: https://github.com/caffreydev/nc-news (a react based front end that consumes this API)
+
 <br>
 
 # Overview
